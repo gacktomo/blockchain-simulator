@@ -1,86 +1,120 @@
 window.onload = function () {
-  var width = 800;
-  var height = 800;
-  var nodes = [
-    { id: 0, label: "nodeA" },
-    { id: 1, label: "nodeB" },
-    { id: 2, label: "nodeC" },
-    { id: 3, label: "nodeD" },
-    { id: 4, label: "nodeE" },
-    { id: 5, label: "nodeF" },
-  ];
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  var nodes = [];
+  const NODE_NUM = 8;
+  const POSITION_TYPE = "circle";
 
-  var links = [
-    { source: 0, target: 1 },
-    { source: 0, target: 2 },
-    { source: 1, target: 3 },
-    { source: 1, target: 3 },
-    { source: 2, target: 1 },
-    { source: 2, target: 3 },
-    { source: 3, target: 4 },
-    { source: 4, target: 5 },
-    { source: 5, target: 3 }
-  ];
-  var force = d3.layout.force()
-    .nodes(nodes)
-    .links(links)
-    .size([width, height])
-    .distance(140) // node同士の距離
-    .friction(0.9) // 摩擦力(加速度)的なものらしい。
-    .charge(-100) // 寄っていこうとする力。推進力(反発力)というらしい。
-    .gravity(0.1) // 画面の中央に引っ張る力。引力。
-    .start();
-
-  var svg = d3.select("body")
-    .append("svg")
-    .attr({ width: width, height: height });
-
-  var link = svg.selectAll("line")
-    .data(links)
-    .enter()
-    .append("line")
-    .style({
-      stroke: "#ccc",
-      "stroke-width": 1
-    });
-
-  var node = svg.selectAll("circle")
-    .data(nodes)
-    .enter()
-    .append("circle")
-    .attr({
-      r: function () { return Math.random() * (40 - 10) + 10; }
-    })
-    .style({
-      fill: "orange"
-    })
-    .call(force.drag);
-
-  var label = svg.selectAll('text')
-    .data(nodes)
-    .enter()
-    .append('text')
-    .attr({
-      "text-anchor": "middle",
-      "fill": "white",
-      "font-size": "9px"
-    })
-    .text(function (data) { return data.label; });
-
-  force.on("tick", function () {
-    link.attr({
-      x1: function (data) { return data.source.x; },
-      y1: function (data) { return data.source.y; },
-      x2: function (data) { return data.target.x; },
-      y2: function (data) { return data.target.y; }
-    });
-    node.attr({
-      cx: function (data) { return data.x; },
-      cy: function (data) { return data.y; }
-    });
-    label.attr({
-      x: function (data) { return data.x; },
-      y: function (data) { return data.y; }
-    });
+  // Initialize pixi canvas
+  var app = new PIXI.Application(width, height, {
+    transparent: true,
+    antialias: true,
   });
+  document.body.appendChild(app.view);
+  var style = new PIXI.TextStyle({
+    fontSize: 30,
+    fontWeight: "bold",
+    fill: 0xffffff,
+  });
+
+  // Set title
+  var title = new PIXI.Text("Sharding Simulator", style);
+  title.anchor.set(0.5);
+  title.x = width / 2;
+  title.y = 30;
+  app.stage.addChild(title);
+
+  // Set layer containers
+  var nodes_container=new PIXI.Container();
+  var links_container=new PIXI.Container();
+  app.stage.addChild(links_container);
+  app.stage.addChild(nodes_container);
+
+  // Append Nodes
+  for(let i=0; i<NODE_NUM; i++){
+    var node = new PIXI.Graphics();
+    node.beginFill(0x589BAA);
+    node.lineStyle(2,0xffffff);
+    node.drawCircle(0, 0, 15);
+    node.endFill();
+    node.links = {};
+    nodes.push(node);
+    setNodePos(i);
+    nodes_container.addChild(node);
+  }
+
+  // Append Links
+  for(let i=1; i<NODE_NUM; i++){
+    var rand = Math.floor( Math.random() * NODE_NUM );
+    if(!nodes[i].links[rand] && rand!=i)
+      connectLink(i, rand);
+  }
+
+  // Change canvas size when resize event emit.
+  window.addEventListener("resize", function() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    title.x = width / 2;
+    refreshGraph();
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+  });
+
+  // like cron
+  app.ticker.add((delta)=> { 
+    if( Math.floor( Math.random() * 100 ) < 5 ){
+      var from = Math.floor( Math.random() * NODE_NUM )
+      for(key in nodes[from].links){
+        sendBlock(from, key);
+      }
+    }
+  });
+
+  function refreshGraph(target){
+    for(let i=0; i<NODE_NUM; i++){
+      setNodePos(i);
+    }
+  }
+
+  function setNodePos(target){
+    if(POSITION_TYPE==="random") {
+      var x = Math.floor( Math.random() * (width*0.9 + 1 - width*0.1) ) + width*0.1;
+      var y = Math.floor( Math.random() * (height*0.9 + 1 - height*0.2) ) + height*0.2;
+    }
+    else if(POSITION_TYPE==="circle") {
+      var r = width<height ? width : height;
+      var x = width/2 + r*0.3 * Math.sin(2*Math.PI/NODE_NUM*target)
+      var y = height/2 + r*0.3 * Math.cos(2*Math.PI/NODE_NUM*target)
+    }
+    nodes[target].x = x;
+    nodes[target].y = y;
+  }
+
+  function connectLink(from, to){
+    nodes[from].links[to] = new PIXI.Graphics();
+    nodes[from].links[to].lineStyle(1,0xffffff)
+        .moveTo(nodes[from].x, nodes[from].y)
+        .lineTo(nodes[to].x, nodes[to].y);
+    nodes[from].links[to].endFill();
+    nodes[from].links[to].alpha = 0.5
+    nodes[to].links[from] = nodes[from]
+    links_container.addChild(nodes[from].links[to]);
+  }
+
+  function sendBlock(from, to){
+    var block = new PIXI.Graphics();
+    block.beginFill(0xD8D1B0);
+    block.drawCircle(0, 0, 5);
+    block.endFill();
+    block.x = nodes[from].x
+    block.y = nodes[from].y
+    links_container.addChild(block);
+
+    TweenMax.to(block, 1, { 
+      x: nodes[to].x, 
+      y: nodes[to].y, 
+      onComplete: function(){
+        block.destroy();
+      },
+    });
+  }
 }
