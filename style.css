@@ -1,3 +1,30 @@
 body {
   background-color: #2A2839;
+  font-size: 16px;
+  font-weight: 100;
+  color: white;
+}
+input {
+  color: white;
+  font-size: 16px;
+  background-color: inherit;
+  border: none;
+  outline: none;
+  width: 100px;
+}
+button {
+  color: white;
+  background-color: cadetblue;
+  border: none;
+  outline: none;
+  width: 120px;
+  height: 25px;
+}
+button:active {
+  background-color: rgb(63, 104, 106);
+}
+
+.container {
+  position: fixed;
+  margin-left: 10px;
 }
