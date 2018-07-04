@@ -3,8 +3,7 @@ window.onload = function () {
   var height = window.innerHeight;
   var nodes = [];
   var NODE_NUM = 5;
-  const POSITION_TYPE = "circle";
-  // const POSITION_TYPE = "random";
+  var LAYOUT_TYPE = "circle";
 
   // Set pixi canvas
   var app = new PIXI.Application(width, height, {
@@ -32,6 +31,7 @@ window.onload = function () {
 
   document.getElementById("refresh_btn").addEventListener("click", function() {
     NODE_NUM = document.getElementById("node_num").value;
+    LAYOUT_TYPE = document.getElementById("layout_type").value;
     initGraph();
   });
 
@@ -81,14 +81,15 @@ window.onload = function () {
     });
     generateTicker.start();
     document.getElementById("node_num").value = NODE_NUM;
+    document.getElementById("layout_type").value = LAYOUT_TYPE;
   }
 
   function setNodePos(target){
-    if(POSITION_TYPE==="random") {
+    if(LAYOUT_TYPE==="random") {
       var x = Math.floor( Math.random() * (width*0.9 + 1 - width*0.1) ) + width*0.1;
       var y = Math.floor( Math.random() * (height*0.9 + 1 - height*0.2) ) + height*0.2;
     }
-    else if(POSITION_TYPE==="circle") {
+    else if(LAYOUT_TYPE==="circle") {
       var r = width<height ? width*0.4 : height*0.4;
       var x = width*0.5 + r * Math.sin(2*Math.PI/NODE_NUM*target)
       var y = height*0.55 + r * Math.cos(2*Math.PI/NODE_NUM*target)

@@ -4,6 +4,13 @@ body {
   font-weight: 100;
   color: white;
 }
+select {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  color: white;
+  font-size: 16px;
+}
 input {
   color: white;
   font-size: 16px;
@@ -23,8 +30,24 @@ button {
 button:active {
   background-color: rgb(63, 104, 106);
 }
+.main-btn {
+  background-color: cadetblue;
+}
+.secondary-btn {
+  background-color: gray;
+}
 
 .container {
   position: fixed;
   margin-left: 10px;
+}
+
+.modal {
+  display: none;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.9);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  padding: 10%;
 }
