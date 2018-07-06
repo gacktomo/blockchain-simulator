@@ -4,13 +4,14 @@ var Graph = function() {
   this.nodes = [];
   this.NODE_NUM = 5;
   this.LAYOUT_TYPE = "circle";
-
   // Set pixi canvas
   this.app = new PIXI.Application(this.width, this.height, {
     transparent: true,
     antialias: true,
   });
   document.body.appendChild(this.app.view);
+  document.getElementById("node_num").value = this.NODE_NUM;
+  document.getElementById("layout_type").value = this.LAYOUT_TYPE;
 
   // Set layer containers
   this.nodes_container=new PIXI.Container();
@@ -18,7 +19,13 @@ var Graph = function() {
   this.generateTicker = new PIXI.ticker.Ticker();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
+  this.init();
+}
 
+Graph.prototype.init = function(){
+  this.width = window.innerWidth;
+  this.height = window.innerHeight
+  this.app.renderer.resize(this.width, this.height);
   this.nodes = [];
   this.nodes_container.destroy();
   this.links_container.destroy();
@@ -26,8 +33,8 @@ var Graph = function() {
   this.links_container=new PIXI.Container();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
-  // this.NODE_NUM = document.getElementById("node_num").value;
-  // this.LAYOUT_TYPE = document.getElementById("layout_type").value;
+  this.NODE_NUM = document.getElementById("node_num").value;
+  this.LAYOUT_TYPE = document.getElementById("layout_type").value;
 
   // Append Nodes
   for(let i=0; i<this.NODE_NUM; i++){
