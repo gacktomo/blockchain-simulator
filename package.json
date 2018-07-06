@@ -1,0 +1,31 @@
+{
+  "name": "sharding-simulator",
+  "version": "1.0.0",
+  "description": "The simulator of Blockchain network with sharding protocol.",
+  "main": "js/main.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack-dev-server --hot --inline --mode development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gacktomo/sharding-simulator.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gacktomo/sharding-simulator/issues"
+  },
+  "homepage": "https://github.com/gacktomo/sharding-simulator#readme",
+  "dependencies": {
+    "gsap": "^2.0.1",
+    "pixi.js": "^4.8.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-serve": "^1.0.4"
+  }
+}
