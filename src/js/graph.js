@@ -1,4 +1,4 @@
-var Graph = function() {
+var Graph = function(nodes) {
   this.width = window.innerWidth;
   this.height = window.innerHeight;
   this.nodes = [];
