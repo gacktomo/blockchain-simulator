@@ -1,11 +1,10 @@
 import * as PIXI from 'pixi.js';
 import {TweenMax} from "gsap/TweenMax";
-
 var Graph = require('./js/graph');
 var Network = require('./js/network');
 
 window.onload = function () {
-  var network = new Network(6)
+  var network = new Network(15)
   var graph = new Graph(network.nodes);
 
   // Event when tapped refresh button.
