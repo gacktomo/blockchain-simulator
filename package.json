@@ -20,6 +20,7 @@
   "homepage": "https://github.com/gacktomo/sharding-simulator#readme",
   "dependencies": {
     "gsap": "^2.0.1",
+    "jssha": "^2.3.1",
     "pixi.js": "^4.8.1"
   },
   "devDependencies": {

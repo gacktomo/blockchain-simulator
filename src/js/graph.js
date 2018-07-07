@@ -2,7 +2,7 @@ var Graph = function(nodes) {
   this.width = window.innerWidth;
   this.height = window.innerHeight;
   this.nodes = [];
-  this.NODE_NUM = 5;
+  this.NODE_NUM = Object.keys(nodes).length;
   this.LAYOUT_TYPE = "circle";
   // Set pixi canvas
   this.app = new PIXI.Application(this.width, this.height, {
@@ -10,12 +10,11 @@ var Graph = function(nodes) {
     antialias: true,
   });
   document.body.appendChild(this.app.view);
-  document.getElementById("node_num").value = this.NODE_NUM;
-  document.getElementById("layout_type").value = this.LAYOUT_TYPE;
+  this.setInfo();
 
   // Set layer containers
-  this.nodes_container=new PIXI.Container();
-  this.links_container=new PIXI.Container();
+  this.nodes_container= new PIXI.Container();
+  this.links_container= new PIXI.Container();
   this.generateTicker = new PIXI.ticker.Ticker();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
@@ -69,7 +68,11 @@ Graph.prototype.init = function(){
       }
     }
   });
+  this.setInfo();
   this.generateTicker.start();
+}
+
+Graph.prototype.setInfo = function(){
   document.getElementById("node_num").value = this.NODE_NUM;
   document.getElementById("layout_type").value = this.LAYOUT_TYPE;
 }
