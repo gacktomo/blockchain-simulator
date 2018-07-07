@@ -43,9 +43,10 @@ button:active {
 }
 
 .modal {
+  opacity: 0.0;
   display: none;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);
   width: 100vw;
   height: 100vh;
   position: fixed;
