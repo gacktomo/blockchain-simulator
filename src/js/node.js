@@ -20,5 +20,4 @@ Node.prototype.receiveData = function(data){
   }
 }
 
-
 module.exports = Node;

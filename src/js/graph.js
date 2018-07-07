@@ -104,7 +104,6 @@ Graph.prototype.connectLink = function(from, to){
       .lineTo(this.nodes[to].x, this.nodes[to].y);
   link.endFill();
   link.alpha = 0.3
-  console.log(link)
   this.nodes[from].links[to] = link;
   this.nodes[to].links[from] = link;
   this.links_container.addChild(this.nodes[from].links[to]);
@@ -124,19 +123,14 @@ Graph.prototype.sendBlock = function(from, to, data){
   var networkSpeed = this.nodes[from].networkSpeed < this.nodes[to].networkSpeed ? this.nodes[from].networkSpeed : this.nodes[to].networkSpeed
   var sendTime = data.size / networkSpeed
   var animTime = sendTime * 1;
-  TweenMax.to(this.nodes[from].links[to], animTime, { 
-    // alpha: 0.9,
-    // tint: 1,
-    // onComplete: function(){
-    //   this.reverse(-1);
-    // },
-    // ease: CustomEase.create("custom", "M0,0,C0.266,0.412,0.436,0.654,0.565,0.775,0.609,0.816,0.908,0.284,1,0"),
-  });
+  this.nodes[from].links[to].alpha = 0.7;
   TweenMax.to(block, animTime, { 
     x: this.nodes[to].x, 
     y: this.nodes[to].y, 
-    onComplete: function(){
+    onComplete: ()=>{
       block.destroy();
+      if(this.nodes[from])
+        this.nodes[from].links[to].alpha = 0.3;
     },
   });
 }
