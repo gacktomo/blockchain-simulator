@@ -1,7 +1,7 @@
 var Graph = function(nodes) {
   this.width = window.innerWidth;
   this.height = window.innerHeight;
-  this.nodes = [];
+  this.nodes = {};
   this.NODE_NUM = Object.keys(nodes).length;
   this.LAYOUT_TYPE = "circle";
   // Set pixi canvas
@@ -18,25 +18,24 @@ var Graph = function(nodes) {
   this.generateTicker = new PIXI.ticker.Ticker();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
-  this.init();
+  this.init(nodes);
 }
 
-Graph.prototype.init = function(){
+Graph.prototype.init = function(nodes){
   this.width = window.innerWidth;
   this.height = window.innerHeight
   this.app.renderer.resize(this.width, this.height);
-  this.nodes = [];
+  this.nodes = {};
   this.nodes_container.destroy();
   this.links_container.destroy();
   this.nodes_container=new PIXI.Container();
   this.links_container=new PIXI.Container();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
-  this.NODE_NUM = document.getElementById("node_num").value;
-  this.LAYOUT_TYPE = document.getElementById("layout_type").value;
+  this.getInfo();
 
   // Append Nodes
-  for(let i=0; i<this.NODE_NUM; i++){
+  for(let id in nodes){
     var node = new PIXI.Graphics();
     var circleSize = 50/this.NODE_NUM > 3 ? 50/this.NODE_NUM : 3;
     node.beginFill(0x589BAA);
@@ -44,16 +43,17 @@ Graph.prototype.init = function(){
     node.drawCircle(0, 0, circleSize);
     node.endFill();
     node.links = {};
-    this.nodes.push(node);
-    this.setNodePos(i);
+    this.nodes[id] = node;
+    this.setNodePos(id);
     this.nodes_container.addChild(node);
   }
 
   // Append Links
-  for(let i=1; i<this.NODE_NUM; i++){
-    var rand = Math.floor( Math.random() * this.NODE_NUM );
-    if(!this.nodes[i].links[rand] && rand!=i)
-      this.connectLink(i, rand);
+  for(let id in nodes){
+    for(let dist_id in nodes[id].links){
+      if(!this.nodes[id].links[dist_id] && dist_id!=id)
+        this.connectLink(id, dist_id);
+    }
   }
 
   // like cron
@@ -61,15 +61,20 @@ Graph.prototype.init = function(){
   this.generateTicker = new PIXI.ticker.Ticker();
   this.generateTicker.stop();
   this.generateTicker.add((delta) => {
-    if( Math.floor( Math.random() * 100 ) < 10 ){
-      var from = Math.floor( Math.random() * this.NODE_NUM )
-      for(let k in this.nodes[from].links){
-        this.sendBlock(from, k);
-      }
-    }
+  //   if( Math.floor( Math.random() * 100 ) < 10 ){
+  //     var from = Math.floor( Math.random() * this.NODE_NUM )
+  //     for(let k in this.nodes[from].links){
+  //       this.sendBlock(from, k);
+  //     }
+  //   }
   });
-  this.setInfo();
   this.generateTicker.start();
+  this.setInfo();
+}
+
+Graph.prototype.getInfo = function(){
+  this.NODE_NUM = document.getElementById("node_num").value;
+  this.LAYOUT_TYPE = document.getElementById("layout_type").value;
 }
 
 Graph.prototype.setInfo = function(){
@@ -78,27 +83,29 @@ Graph.prototype.setInfo = function(){
 }
 
 Graph.prototype.setNodePos = function(target){
+  var len = Object.keys(this.nodes).length;
   if(this.LAYOUT_TYPE==="random") {
     var x = Math.floor( Math.random() * (this.width*0.9 + 1 - this.width*0.1) ) + this.width*0.1;
     var y = Math.floor( Math.random() * (this.height*0.9 + 1 - this.height*0.2) ) + this.height*0.2;
   }
   else if(this.LAYOUT_TYPE==="circle") {
     var r = this.width<this.height ? this.width*0.4 : this.height*0.4;
-    var x = this.width*0.5 + r * Math.sin(2*Math.PI/this.NODE_NUM*target)
-    var y = this.height*0.55 + r * Math.cos(2*Math.PI/this.NODE_NUM*target)
+    var x = this.width*0.5 + r * Math.sin(2*Math.PI/this.NODE_NUM*len)
+    var y = this.height*0.55 + r * Math.cos(2*Math.PI/this.NODE_NUM*len)
   }
   this.nodes[target].x = x;
   this.nodes[target].y = y;
 }
 
 Graph.prototype.connectLink = function(from, to){
-  this.nodes[from].links[to] = new PIXI.Graphics();
-  this.nodes[from].links[to].lineStyle(1,0xffffff)
+  var link = new PIXI.Graphics();
+  link.lineStyle(1,0xffffff)
       .moveTo(this.nodes[from].x, this.nodes[from].y)
       .lineTo(this.nodes[to].x, this.nodes[to].y);
-  this.nodes[from].links[to].endFill();
-  this.nodes[from].links[to].alpha = 0.3
-  this.nodes[to].links[from] = this.nodes[from]
+  link.endFill();
+  link.alpha = 0.3
+  this.nodes[from].links[to] = link;
+  this.nodes[to].links[from] = link;
   this.links_container.addChild(this.nodes[from].links[to]);
 }
 

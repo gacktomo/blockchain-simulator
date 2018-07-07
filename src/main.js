@@ -8,7 +8,10 @@ window.onload = function () {
   var network = new Network(6)
   var graph = new Graph(network.nodes);
 
+  // Event when tapped refresh button.
   document.getElementById("refresh_btn").addEventListener("click", function() { 
-    graph.init();
+    var num = document.getElementById("node_num").value;
+    network.init(num);
+    graph.init(network.nodes);
   });
 }
