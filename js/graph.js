@@ -71,12 +71,12 @@ Graph.prototype.setNodePos = function(target){
   var len = Object.keys(this.nodes).length;
   if(LAYOUT_TYPE==="random") {
     var x = Math.floor( Math.random() * (this.width*0.9 + 1 - this.width*0.1) ) + this.width*0.1;
-    var y = Math.floor( Math.random() * (this.height*0.9 + 1 - this.height*0.2) ) + this.height*0.2;
+    var y = Math.floor( Math.random() * (this.height*0.8 + 1 - this.height*0.2) ) + this.height*0.2;
   }
   else if(LAYOUT_TYPE==="circle") {
-    var r = this.width<this.height ? this.width*0.4 : this.height*0.4;
-    var x = this.width*0.5 + r * Math.sin(2*Math.PI/NODE_NUM*len)
-    var y = this.height*0.55 + r * Math.cos(2*Math.PI/NODE_NUM*len)
+    var r = this.width<this.height ? this.width*0.3 : this.height*0.3;
+    var x = this.width*0.51 + r * Math.sin(2*Math.PI/NODE_NUM*len)
+    var y = this.height*0.5 + r * Math.cos(2*Math.PI/NODE_NUM*len)
   }
   this.nodes[target].x = x;
   this.nodes[target].y = y;

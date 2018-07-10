@@ -5,7 +5,7 @@ var Network = require('./network');
 var UI = require('./UI');
 
 //global settings
-window.TRANSACTION_SIZE = 1; //KB
+window.TRANSACTION_SIZE = 1000; //KB
 window.BLOCK_SIZE = 1; //MB
 window.BLOCK_TIME = 10; //sec
 window.NETWORK_SPEED = 19; //Mbps

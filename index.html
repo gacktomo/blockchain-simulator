@@ -1,4 +1,3 @@
-<html>
 <head>
   <title>Sharding Simulator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -9,8 +8,12 @@
   <div id="settings_modal" class="modal">
     <h2> Settings </h2>
     Transaction Size (KB) : <input type="number" id="transaction_size" /></br>
+    <s>
     Block Size (MB) : <input type="number" id="block_size" /></br>
+    </s>
+    <s>
     Block Time (Sec) : <input type="number" id="block_time" /></br>
+    </s>
     Avg Network Speed (Mbps) : <input type="number" id="network_speed" /></br>
     Node Num : <input type="number" id="node_num" /></br>
     Layout : 
@@ -23,8 +26,12 @@
     <button id="cancel_btn" class="secondary-btn">Cancel</button>
   </div>
   <div class="container">
-    <h2 style="color:white;">Sharding Simulator</h2>
+    <h2>Sharding Simulator</h2>
     <button id="settings_btn">Settings</button>
   </div>
+  <div id="footer" class="footer">
+    <s><p>Block Height <span id="block_height">#1</span></p> </s>
+    <s><p>Throughput <span id="throughput">120</span> tps</p> </s>
+    <s> <p>Attack Lisk <span id="attack_lisk">0.4</span> %</p> </s>
+  </div>
 </body>
-</html>
