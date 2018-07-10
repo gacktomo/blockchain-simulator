@@ -5,15 +5,6 @@ MIN_CONNECTION = 8;
 var Network = function(num) {
   this.nodes = {};
   this.init(num);
-  this.timer = setInterval(()=>{
-    var node_num = Object.keys(this.nodes).length;
-    var rand = Math.floor(Math.random() * node_num);
-    if(rand < node_num * 0.3){
-      this.broadcast(Object.keys(this.nodes)[rand],
-        { id: 1, hop: 0, size: 2, }
-      )
-    }
-  }, 500)
   window.addEventListener("broadcast", (event) => { 
     this.broadcast(event.detail.from, event.detail.data)
   })
@@ -39,12 +30,21 @@ Network.prototype.init = function(num){
       }
     })
   }
+  this.timer = setInterval(()=>{
+    var node_num = Object.keys(this.nodes).length;
+    var rand = Math.floor(Math.random() * node_num);
+    if(rand < node_num * 0.3){
+      this.broadcast(Object.keys(this.nodes)[rand],
+        { id: 1, hop: 0, size: TRANSACTION_SIZE/1000, }
+      )
+    }
+  }, 500)
 }
 
 Network.prototype.broadcast = function(src_id, data){
   for(let dist_id in this.nodes[src_id].links){
     var networkSpeed = this.nodes[src_id].networkSpeed < this.nodes[dist_id].networkSpeed ? this.nodes[src_id].networkSpeed : this.nodes[dist_id].networkSpeed
-    var sendTime = data.size / networkSpeed
+    var sendTime = (data.size * 8) / networkSpeed
     setTimeout(()=>{
       if(this.nodes[dist_id])
       this.nodes[dist_id].receiveData(data);
@@ -54,6 +54,7 @@ Network.prototype.broadcast = function(src_id, data){
         data: data,
         from: src_id,
         to: dist_id,
+        sendTime: sendTime,
       }
     }));
   }

@@ -19,7 +19,7 @@ var Graph = function(nodes) {
 
   // Set event listners
   window.addEventListener("sendData", (event) => { 
-    this.sendBlock(event.detail.from, event.detail.to, event.detail.data)
+    this.sendBlock(event.detail)
   })
 }
 
@@ -94,28 +94,25 @@ Graph.prototype.connectLink = function(from, to){
   this.links_container.addChild(this.nodes[from].links[to]);
 }
 
-Graph.prototype.sendBlock = function(from, to, data){
+Graph.prototype.sendBlock = function(event){
   var block = new PIXI.Graphics();
   var circleSize = 20/NODE_NUM > 3 ? 20/NODE_NUM : 3;
   block.beginFill(0x38F150);
   block.drawCircle(0, 0, circleSize);
   block.endFill();
   block.fillColor = "0xFF0000";
-  block.x = this.nodes[from].x
-  block.y = this.nodes[from].y
+  block.x = this.nodes[event.from].x
+  block.y = this.nodes[event.from].y
   this.links_container.addChild(block);
 
-  var networkSpeed = this.nodes[from].networkSpeed < this.nodes[to].networkSpeed ? this.nodes[from].networkSpeed : this.nodes[to].networkSpeed
-  var sendTime = data.size / networkSpeed
-  var animTime = sendTime * 1;
-  this.nodes[from].links[to].alpha = 0.7;
-  TweenMax.to(block, animTime, { 
-    x: this.nodes[to].x, 
-    y: this.nodes[to].y, 
+  this.nodes[event.from].links[event.to].alpha = 0.7;
+  TweenMax.to(block, event.sendTime, { 
+    x: this.nodes[event.to].x, 
+    y: this.nodes[event.to].y, 
     onComplete: ()=>{
       block.destroy();
-      if(this.nodes[from])
-        this.nodes[from].links[to].alpha = 0.3;
+      if(this.nodes[event.from])
+        this.nodes[event.from].links[event.to].alpha = 0.3;
     },
   });
 }

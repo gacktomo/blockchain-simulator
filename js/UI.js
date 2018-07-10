@@ -9,6 +9,7 @@ var UI = function() {
 }
 
 UI.prototype.getInfo = function(){
+  TRANSACTION_SIZE = document.getElementById("transaction_size").value;
   BLOCK_SIZE = document.getElementById("block_size").value;
   BLOCK_TIME = document.getElementById("block_time").value;
   NETWORK_SPEED = document.getElementById("network_speed").value;
@@ -17,6 +18,7 @@ UI.prototype.getInfo = function(){
 }
 
 UI.prototype.setInfo = function(){
+  document.getElementById("transaction_size").value = TRANSACTION_SIZE;
   document.getElementById("block_size").value = BLOCK_SIZE;
   document.getElementById("block_time").value = BLOCK_TIME;
   document.getElementById("network_speed").value = NETWORK_SPEED;
