@@ -3,8 +3,6 @@ jsSHA = require("jssha");
 MIN_CONNECTION = 8;
 
 var Network = function(num) {
-  this.blockSize = 1; //MB
-  this.blockTime = 60; //sec
   this.nodes = {};
   this.init(num);
   this.timer = setInterval(()=>{

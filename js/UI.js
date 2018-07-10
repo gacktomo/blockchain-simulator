@@ -8,6 +8,29 @@ var UI = function() {
   });
 }
 
+UI.prototype.getInfo = function(){
+  BLOCK_SIZE = document.getElementById("block_size").value;
+  BLOCK_TIME = document.getElementById("block_time").value;
+  NETWORK_SPEED = document.getElementById("network_speed").value;
+  NODE_NUM = document.getElementById("node_num").value;
+  LAYOUT_TYPE = document.getElementById("layout_type").value;
+}
+
+UI.prototype.setInfo = function(){
+  document.getElementById("block_size").value = BLOCK_SIZE;
+  document.getElementById("block_time").value = BLOCK_TIME;
+  document.getElementById("network_speed").value = NETWORK_SPEED;
+  document.getElementById("node_num").value = NODE_NUM;
+  document.getElementById("layout_type").value = LAYOUT_TYPE;
+}
+
+UI.prototype.openModal = function(){
+  document.getElementById("settings_modal").style.display = 'inline';
+  TweenMax.to(document.getElementById("settings_modal"), 0.25, { 
+    opacity: 1.0, 
+  });
+}
+
 UI.prototype.openModal = function(){
   document.getElementById("settings_modal").style.display = 'inline';
   TweenMax.to(document.getElementById("settings_modal"), 0.25, { 

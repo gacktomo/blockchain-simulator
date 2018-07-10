@@ -2,15 +2,12 @@ var Graph = function(nodes) {
   this.width = window.innerWidth;
   this.height = window.innerHeight;
   this.nodes = {};
-  this.NODE_NUM = Object.keys(nodes).length;
-  this.LAYOUT_TYPE = "circle";
   // Set pixi canvas
   this.app = new PIXI.Application(this.width, this.height, {
     transparent: true,
     antialias: true,
   });
   document.body.appendChild(this.app.view);
-  this.setInfo();
 
   // Set layer containers
   this.nodes_container= new PIXI.Container();
@@ -37,14 +34,13 @@ Graph.prototype.init = function(nodes){
   this.links_container=new PIXI.Container();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
-  this.getInfo();
 
   // Append Nodes
   for(let id in nodes){
     var node = new PIXI.Graphics();
-    var circleSize = 50/this.NODE_NUM > 3 ? 50/this.NODE_NUM : 3;
+    var circleSize = 50/NODE_NUM > 3 ? 50/NODE_NUM : 3;
     node.beginFill(0x589BAA);
-    node.lineStyle(10/this.NODE_NUM,0xffffff);
+    node.lineStyle(10/NODE_NUM,0xffffff);
     node.drawCircle(0, 0, circleSize);
     node.endFill();
     node.links = {};
@@ -69,29 +65,18 @@ Graph.prototype.init = function(nodes){
   this.generateTicker.add((delta) => {
   });
   this.generateTicker.start();
-  this.setInfo();
-}
-
-Graph.prototype.getInfo = function(){
-  this.NODE_NUM = document.getElementById("node_num").value;
-  this.LAYOUT_TYPE = document.getElementById("layout_type").value;
-}
-
-Graph.prototype.setInfo = function(){
-  document.getElementById("node_num").value = this.NODE_NUM;
-  document.getElementById("layout_type").value = this.LAYOUT_TYPE;
 }
 
 Graph.prototype.setNodePos = function(target){
   var len = Object.keys(this.nodes).length;
-  if(this.LAYOUT_TYPE==="random") {
+  if(LAYOUT_TYPE==="random") {
     var x = Math.floor( Math.random() * (this.width*0.9 + 1 - this.width*0.1) ) + this.width*0.1;
     var y = Math.floor( Math.random() * (this.height*0.9 + 1 - this.height*0.2) ) + this.height*0.2;
   }
-  else if(this.LAYOUT_TYPE==="circle") {
+  else if(LAYOUT_TYPE==="circle") {
     var r = this.width<this.height ? this.width*0.4 : this.height*0.4;
-    var x = this.width*0.5 + r * Math.sin(2*Math.PI/this.NODE_NUM*len)
-    var y = this.height*0.55 + r * Math.cos(2*Math.PI/this.NODE_NUM*len)
+    var x = this.width*0.5 + r * Math.sin(2*Math.PI/NODE_NUM*len)
+    var y = this.height*0.55 + r * Math.cos(2*Math.PI/NODE_NUM*len)
   }
   this.nodes[target].x = x;
   this.nodes[target].y = y;
@@ -111,7 +96,7 @@ Graph.prototype.connectLink = function(from, to){
 
 Graph.prototype.sendBlock = function(from, to, data){
   var block = new PIXI.Graphics();
-  var circleSize = 20/this.NODE_NUM > 3 ? 20/this.NODE_NUM : 3;
+  var circleSize = 20/NODE_NUM > 3 ? 20/NODE_NUM : 3;
   block.beginFill(0x38F150);
   block.drawCircle(0, 0, circleSize);
   block.endFill();
