@@ -5,17 +5,21 @@ var UI = function() {
   document.getElementById("cancel_btn").addEventListener("click", ()=> { 
     this.closeModal();
   });
-  document.getElementById("footer").addEventListener("click", ()=> { 
-    var style = document.getElementById("footer").style;
-    if(style.height == "" || style.height == "50px")
-      this.openFooter();
-    else
-      this.closeFooter();
-  });
+  window.addEventListener("new_transaction", (event) => { 
+    this.addConsole(event.detail)
+  })
+  // document.getElementById("footer").addEventListener("click", ()=> { 
+  //   var style = document.getElementById("footer").style;
+  //   if(style.height == "" || style.height == "50px")
+  //     this.openFooter();
+  //   else
+  //     this.closeFooter();
+  // });
 }
 
 UI.prototype.getInfo = function(){
   TRANSACTION_SIZE = document.getElementById("transaction_size").value;
+  TRANSACTION_FREQ = document.getElementById("transaction_freq").value;
   BLOCK_SIZE = document.getElementById("block_size").value;
   BLOCK_TIME = document.getElementById("block_time").value;
   NETWORK_SPEED = document.getElementById("network_speed").value;
@@ -25,11 +29,17 @@ UI.prototype.getInfo = function(){
 
 UI.prototype.setInfo = function(){
   document.getElementById("transaction_size").value = TRANSACTION_SIZE;
+  document.getElementById("transaction_freq").value = TRANSACTION_FREQ;
   document.getElementById("block_size").value = BLOCK_SIZE;
   document.getElementById("block_time").value = BLOCK_TIME;
   document.getElementById("network_speed").value = NETWORK_SPEED;
   document.getElementById("node_num").value = NODE_NUM;
   document.getElementById("layout_type").value = LAYOUT_TYPE;
+}
+
+UI.prototype.addConsole = function(event){
+  document.getElementById("footer")
+  .insertAdjacentHTML('afterbegin',`<div>Broadcasted new <span style="color:#38F150;">transaction</span> ${event.data.id}</div>`);
 }
 
 UI.prototype.openModal = function(){
@@ -49,7 +59,7 @@ UI.prototype.closeModal = function(){
 
 UI.prototype.openFooter = function(){
   TweenMax.to(document.getElementById("footer"), 0.3, { 
-    height: "130px", 
+    height: "100px", 
   });
 }
 UI.prototype.closeFooter = function(){

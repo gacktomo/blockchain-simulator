@@ -5,7 +5,7 @@ body {
   color: white;
   margin: 0;
 }
-h1,h2,p,span {
+h1,h2,p {
   color: white;
 }
 select {
@@ -61,9 +61,15 @@ button:active {
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.4);
   width: 100vw;
-  height: 50px;
+  height: 100px;
   position: fixed;
   bottom: 0px;
   padding: 10px;
   padding-left: 20px;
+  overflow: scroll;
+}
+
+.info-text {
+  font-size: 12px;
+  color: rgb(125, 125, 125) !important;
 }

@@ -16,9 +16,7 @@ Network.prototype.init = function(num){
     var id = new Date().getTime().toString(16) + Math.floor(1000*Math.random()).toString(16);
     this.nodes[id] = new Node(id);
   }
-  // var shaObj = new jsSHA("SHA-1", "TEXT");
-  // console.log(shaObj.getHash("HEX"))
-
+  //random link to 8 nodes
   for(let id in this.nodes){
     shuffle(Object.keys(this.nodes)).forEach((dist_id) => {
       if(Object.keys(this.nodes[id].links).length >= MIN_CONNECTION)
@@ -30,15 +28,39 @@ Network.prototype.init = function(num){
       }
     })
   }
+  this.node_num = Object.keys(this.nodes).length;
   this.timer = setInterval(()=>{
-    var node_num = Object.keys(this.nodes).length;
-    var rand = Math.floor(Math.random() * node_num);
-    if(rand < node_num * 0.3){
-      this.broadcast(Object.keys(this.nodes)[rand],
-        { id: 1, hop: 0, size: TRANSACTION_SIZE/1000, }
-      )
+    var rand = Math.floor(Math.random() * 1000);
+    
+    if(TRANSACTION_FREQ < 1000){
+      if(rand <= TRANSACTION_FREQ){
+        this.newTransaction();
+      }
+    }else{
+      var times = Math.floor(TRANSACTION_FREQ/1000)
+      for(let i=0; i<times; i++){
+        this.newTransaction();
+      }
     }
-  }, 500)
+  }, 1)
+
+  // var shaObj = new jsSHA("SHA-1", "TEXT");
+  // console.log(shaObj.getHash("HEX"))
+}
+
+Network.prototype.newTransaction = function(src_id){
+  var src_node_index = Math.floor(Math.random() * this.node_num);
+  src_id = src_id || Object.keys(this.nodes)[src_node_index]
+
+  var data = { 
+    id: uuid(), 
+    to: uuid(), 
+    size: TRANSACTION_SIZE/1000, 
+  }
+  this.broadcast(src_id, data)
+  window.dispatchEvent(new CustomEvent("new_transaction", {
+    detail:{ data: data }
+  }));
 }
 
 Network.prototype.broadcast = function(src_id, data){
@@ -68,5 +90,17 @@ function shuffle(array){
     array[r] = tmp;
   }
   return array;
+}
+function uuid() {
+  var uuid = "", i, random;
+  for (i = 0; i < 32; i++) {
+    random = Math.random() * 16 | 0;
+
+    if (i == 8 || i == 12 || i == 16 || i == 20) {
+      uuid += "-"
+    }
+    uuid += (i == 12 ? 4 : (i == 16 ? (random & 3 | 8) : random)).toString(16);
+  }
+  return uuid;
 }
 module.exports = Network;
