@@ -5,7 +5,7 @@ var UI = function() {
   document.getElementById("cancel_btn").addEventListener("click", ()=> { 
     this.closeModal();
   });
-  window.addEventListener("new_transaction", (event) => { 
+  window.addEventListener("new_broadcast", (event) => { 
     this.addConsole(event.detail)
   })
   // document.getElementById("footer").addEventListener("click", ()=> { 
@@ -38,8 +38,15 @@ UI.prototype.setInfo = function(){
 }
 
 UI.prototype.addConsole = function(event){
-  document.getElementById("footer")
-  .insertAdjacentHTML('afterbegin',`<div>Broadcasted new <span style="color:#38F150;">transaction</span> ${event.data.id}</div>`);
+  if(event.data.type == "tx"){
+    document.getElementById("footer").insertAdjacentHTML('afterbegin',
+      `<div>Broadcasted new <span style="color:#38F150;">Transaction</span> ${event.data.id}</div>`
+    );
+  }else if(event.data.type == "inv"){
+    document.getElementById("footer").insertAdjacentHTML('afterbegin',
+      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> ${event.data.id}</div>`
+    );
+  }
 }
 
 UI.prototype.openModal = function(){

@@ -19,7 +19,7 @@ var Graph = function(nodes) {
 
   // Set event listners
   window.addEventListener("sendData", (event) => { 
-    this.sendBlock(event.detail)
+    this.sendData(event.detail)
   })
 }
 
@@ -94,13 +94,16 @@ Graph.prototype.connectLink = function(from, to){
   this.links_container.addChild(this.nodes[from].links[to]);
 }
 
-Graph.prototype.sendBlock = function(event){
+Graph.prototype.sendData = function(event){
   var block = new PIXI.Graphics();
   var circleSize = 20/NODE_NUM > 3 ? 20/NODE_NUM : 3;
-  block.beginFill(0x38F150);
+  if(event.data.type == "tx")
+    block.beginFill(0x38F150);
+  else if(event.data.type == "inv")
+    block.beginFill(0xc62c2c);
   block.drawCircle(0, 0, circleSize);
   block.endFill();
-  block.fillColor = "0xFF0000";
+  // block.fillColor = "0xFF0000";
   block.x = this.nodes[event.from].x
   block.y = this.nodes[event.from].y
   this.links_container.addChild(block);

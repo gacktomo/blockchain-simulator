@@ -5,19 +5,43 @@ var Node = function(id) {
   this.links = {};
   this.group = null;
   this.transactions = {};
-  this.blocks = [];
-  // console.log(this)
+  this.block_height = 0;
+}
+
+Node.prototype.genTxList = function(data){
+  let tx_num = 0;
+  let tx_list = {}
+  for(txid in this.transactions){
+    tx_num += 1;
+    if(tx_num < BLOCK_SIZE*1000/TRANSACTION_SIZE){
+      tx_list[txid] = this.transactions[txid]
+      delete this.transactions[txid];
+      // ToDo - Tx exec order
+    }else{
+      return tx_list
+    }
+  }
 }
 
 Node.prototype.receiveData = function(data){
-  if(!this.transactions[data.id]){
-    this.transactions[data.id] = data;
-    window.dispatchEvent(new CustomEvent("broadcast", {
-      detail:{
-        data: data,
-        from: this.id,
+  if(data.type == "tx"){
+    if(!this.transactions[data.id]){
+      this.transactions[data.id] = data;
+      window.dispatchEvent(new CustomEvent("broadcast", {
+        detail:{
+          data: data,
+          from: this.id,
+        }
+      }));
+    }
+  }else if(data.type == "inv"){
+    // ToDo - contain block number in data when generate block
+    if(data.block_number > this.block_height){
+      this.block_height = data.block_number
+      for(txid in this.data.tx_list){
+        delete this.transaction[txid]
       }
-    }));
+    }
   }
 }
 

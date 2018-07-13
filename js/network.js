@@ -29,9 +29,8 @@ Network.prototype.init = function(num){
     })
   }
   this.node_num = Object.keys(this.nodes).length;
-  this.timer = setInterval(()=>{
-    var rand = Math.floor(Math.random() * 1000);
-    
+  this.txGenTimer = setInterval(()=>{
+    let rand = Math.floor(Math.random() * 1000);
     if(TRANSACTION_FREQ < 1000){
       if(rand <= TRANSACTION_FREQ){
         this.newTransaction();
@@ -43,7 +42,9 @@ Network.prototype.init = function(num){
       }
     }
   }, 1)
-
+  this.blockGenTimer = setInterval(()=>{
+    this.newBlock()
+  }, 1000 * BLOCK_TIME)
   // var shaObj = new jsSHA("SHA-1", "TEXT");
   // console.log(shaObj.getHash("HEX"))
 }
@@ -53,12 +54,30 @@ Network.prototype.newTransaction = function(src_id){
   src_id = src_id || Object.keys(this.nodes)[src_node_index]
 
   var data = { 
+    type: "tx",
     id: uuid(), 
     to: uuid(), 
     size: TRANSACTION_SIZE/1000, 
   }
   this.broadcast(src_id, data)
-  window.dispatchEvent(new CustomEvent("new_transaction", {
+  window.dispatchEvent(new CustomEvent("new_broadcast", {
+    detail:{ data: data }
+  }));
+}
+
+Network.prototype.newBlock = function(src_id){
+  var src_node_index = Math.floor(Math.random() * this.node_num);
+  src_id = src_id || Object.keys(this.nodes)[src_node_index]
+
+  var data = { 
+    type: "inv",
+    id: uuid(), 
+    to: uuid(), 
+    size: TRANSACTION_SIZE/1000, 
+  }
+  data.txlist = this.nodes[src_id].genTxList()
+  this.broadcast(src_id, data)
+  window.dispatchEvent(new CustomEvent("new_broadcast", {
     detail:{ data: data }
   }));
 }

@@ -6,9 +6,9 @@ var UI = require('./UI');
 
 //global settings
 window.TRANSACTION_SIZE = 1000; // KB
-window.TRANSACTION_FREQ = 10; // tx/s
-window.BLOCK_SIZE = 1; // MB
-window.BLOCK_TIME = 10; // sec
+window.TRANSACTION_FREQ = 3; // tx/s
+window.BLOCK_SIZE = 4; // MB
+window.BLOCK_TIME = 3; // sec
 window.NETWORK_SPEED = 19; // Mbps
 window.NODE_NUM = 16;
 window.LAYOUT_TYPE = "circle";
