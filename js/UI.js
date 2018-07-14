@@ -6,15 +6,22 @@ var UI = function() {
     this.closeModal();
   });
   window.addEventListener("new_broadcast", (event) => { 
-    this.addConsole(event.detail)
+    this.setResult(event.detail.data)
+    this.addConsole(event.detail.data)
   })
-  // document.getElementById("footer").addEventListener("click", ()=> { 
-  //   var style = document.getElementById("footer").style;
-  //   if(style.height == "" || style.height == "50px")
-  //     this.openFooter();
-  //   else
-  //     this.closeFooter();
-  // });
+}
+
+UI.prototype.setResult = function(data){
+  if(data.type == "inv"){
+    if(BLOCK_HEIGHT < data.block_number){
+      BLOCK_HEIGHT = data.block_number
+      document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
+    }
+    data.txlist = data.txlist || {};
+    CONFIRMED_TX_NUM += Object.keys(data.txlist).length;
+    THROUGHPUT = Math.floor(CONFIRMED_TX_NUM/ELAPSED_TIME*10)/10;
+    document.getElementById("throughput").innerHTML = THROUGHPUT
+  }
 }
 
 UI.prototype.getInfo = function(){
@@ -35,16 +42,20 @@ UI.prototype.setInfo = function(){
   document.getElementById("network_speed").value = NETWORK_SPEED;
   document.getElementById("node_num").value = NODE_NUM;
   document.getElementById("layout_type").value = LAYOUT_TYPE;
+  document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
+  document.getElementById("throughput").innerHTML = THROUGHPUT
+  document.getElementById("attack_lisk").innerHTML = ATTACK_LISK
+  document.getElementById("tx_latency").innerHTML = TX_LATENCY
 }
 
-UI.prototype.addConsole = function(event){
-  if(event.data.type == "tx"){
+UI.prototype.addConsole = function(data){
+  if(data.type == "tx"){
     document.getElementById("footer").insertAdjacentHTML('afterbegin',
-      `<div>Broadcasted new <span style="color:#38F150;">Transaction</span> ${event.data.id}</div>`
+      `<div>Broadcasted new <span style="color:#38F150;">Transaction</span> ${data.id}</div>`
     );
-  }else if(event.data.type == "inv"){
+  }else if(data.type == "inv"){
     document.getElementById("footer").insertAdjacentHTML('afterbegin',
-      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> ${event.data.id}</div>`
+      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> ${data.id}</div>`
     );
   }
 }

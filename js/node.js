@@ -38,7 +38,7 @@ Node.prototype.receiveData = function(data){
     // ToDo - contain block number in data when generate block
     if(data.block_number > this.block_height){
       this.block_height = data.block_number
-      for(txid in this.data.tx_list){
+      for(txid in data.tx_list){
         delete this.transaction[txid]
       }
     }

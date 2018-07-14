@@ -74,6 +74,7 @@ Network.prototype.newBlock = function(src_id){
     id: uuid(), 
     to: uuid(), 
     size: TRANSACTION_SIZE/1000, 
+    block_number: this.nodes[src_id].block_height + 1,
   }
   data.txlist = this.nodes[src_id].genTxList()
   this.broadcast(src_id, data)
@@ -114,12 +115,9 @@ function uuid() {
   var uuid = "", i, random;
   for (i = 0; i < 32; i++) {
     random = Math.random() * 16 | 0;
-
-    if (i == 8 || i == 12 || i == 16 || i == 20) {
-      uuid += "-"
-    }
     uuid += (i == 12 ? 4 : (i == 16 ? (random & 3 | 8) : random)).toString(16);
   }
   return uuid;
 }
+
 module.exports = Network;

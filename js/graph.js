@@ -62,8 +62,7 @@ Graph.prototype.init = function(nodes){
   this.generateTicker.destroy();
   this.generateTicker = new PIXI.ticker.Ticker();
   this.generateTicker.stop();
-  this.generateTicker.add((delta) => {
-  });
+  this.generateTicker.add((delta) => {});
   this.generateTicker.start();
 }
 
@@ -103,7 +102,6 @@ Graph.prototype.sendData = function(event){
     block.beginFill(0xc62c2c);
   block.drawCircle(0, 0, circleSize);
   block.endFill();
-  // block.fillColor = "0xFF0000";
   block.x = this.nodes[event.from].x
   block.y = this.nodes[event.from].y
   this.links_container.addChild(block);
