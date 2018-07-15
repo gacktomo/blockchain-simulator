@@ -5,6 +5,8 @@ module.exports = {
     filename: 'bundle.js' //ビルドした後のファイル名
   },
   devServer: {
+    host: '0.0.0.0',
+    disableHostCheck: true,
     contentBase: __dirname + "/",
     port: 8080
   },

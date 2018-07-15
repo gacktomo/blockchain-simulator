@@ -12,8 +12,9 @@ var Network = function(num) {
 
 Network.prototype.init = function(num){
   this.nodes = {}
+  this.tx_num = 0
   for(let i=0; i<num; i++){
-    var id = new Date().getTime().toString(16) + Math.floor(1000*Math.random()).toString(16);
+    var id = uuid();
     this.nodes[id] = new Node(id);
   }
   //random link to 8 nodes
@@ -29,19 +30,17 @@ Network.prototype.init = function(num){
     })
   }
   this.node_num = Object.keys(this.nodes).length;
+  let t = 1;
+  let times = Math.floor(TRANSACTION_FREQ/1000)
+  if(TRANSACTION_FREQ < 1000)
+    t = Math.floor(1000/TRANSACTION_FREQ);
+  if(this.txGenTimer) clearInterval(this.txGenTimer)
   this.txGenTimer = setInterval(()=>{
-    let rand = Math.floor(Math.random() * 1000);
-    if(TRANSACTION_FREQ < 1000){
-      if(rand <= TRANSACTION_FREQ){
-        this.newTransaction();
-      }
-    }else{
-      var times = Math.floor(TRANSACTION_FREQ/1000)
-      for(let i=0; i<times; i++){
-        this.newTransaction();
-      }
+    for(let i=0; i<=times; i++){
+      this.newTransaction();
     }
-  }, 1)
+  }, t)
+  if(this.blockGenTimer) clearInterval(this.blockGenTimer)
   this.blockGenTimer = setInterval(()=>{
     this.newBlock()
   }, 1000 * BLOCK_TIME)
@@ -53,11 +52,13 @@ Network.prototype.newTransaction = function(src_id){
   var src_node_index = Math.floor(Math.random() * this.node_num);
   src_id = src_id || Object.keys(this.nodes)[src_node_index]
 
+  this.tx_num++
   var data = { 
     type: "tx",
-    id: uuid(), 
+    id: this.tx_num, 
     to: uuid(), 
     size: TRANSACTION_SIZE/1000, 
+    gentime: ELAPSED_TIME,
   }
   this.broadcast(src_id, data)
   window.dispatchEvent(new CustomEvent("new_broadcast", {

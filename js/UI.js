@@ -11,15 +11,33 @@ var UI = function() {
   })
 }
 
+UI.prototype.init = function(){
+  window.CONFIRMED_TX_NUM = 0;
+  window.ELAPSED_TIME = 0;
+  window.BLOCK_HEIGHT = 0;
+  window.THROUGHPUT = 0;
+  window.ATTACK_LISK = 0;
+  window.TX_LATENCY = 0;
+  this.setInfo();
+}
+
 UI.prototype.setResult = function(data){
   if(data.type == "inv"){
     if(BLOCK_HEIGHT < data.block_number){
       BLOCK_HEIGHT = data.block_number
       document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
     }
+    let diff = 0;
+    let sum = TX_LATENCY * CONFIRMED_TX_NUM
+    for(txid in data.txlist){
+      diff += (ELAPSED_TIME - data.txlist[txid].gentime)
+    }
     data.txlist = data.txlist || {};
     CONFIRMED_TX_NUM += Object.keys(data.txlist).length;
-    THROUGHPUT = Math.floor(CONFIRMED_TX_NUM/ELAPSED_TIME*10)/10;
+    TX_LATENCY = Math.floor((sum + diff)/CONFIRMED_TX_NUM*100)/100
+    document.getElementById("tx_latency").innerHTML = TX_LATENCY
+
+    THROUGHPUT = Math.floor(CONFIRMED_TX_NUM/(ELAPSED_TIME+1)*10)/10;
     document.getElementById("throughput").innerHTML = THROUGHPUT
   }
 }

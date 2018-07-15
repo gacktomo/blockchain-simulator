@@ -10,17 +10,19 @@ var Node = function(id) {
 
 Node.prototype.genTxList = function(data){
   let tx_num = 0;
-  let tx_list = {}
+  let block_capacity = BLOCK_SIZE*1000/TRANSACTION_SIZE;
+  let tx_list = {};
   for(txid in this.transactions){
     tx_num += 1;
-    if(tx_num < BLOCK_SIZE*1000/TRANSACTION_SIZE){
+    if(tx_num <= block_capacity){
       tx_list[txid] = this.transactions[txid]
       delete this.transactions[txid];
       // ToDo - Tx exec order
     }else{
-      return tx_list
+      break;
     }
   }
+  return tx_list
 }
 
 Node.prototype.receiveData = function(data){
@@ -28,19 +30,18 @@ Node.prototype.receiveData = function(data){
     if(!this.transactions[data.id]){
       this.transactions[data.id] = data;
       window.dispatchEvent(new CustomEvent("broadcast", {
-        detail:{
-          data: data,
-          from: this.id,
-        }
+        detail:{ data: data, from: this.id, }
       }));
     }
   }else if(data.type == "inv"){
-    // ToDo - contain block number in data when generate block
     if(data.block_number > this.block_height){
       this.block_height = data.block_number
-      for(txid in data.tx_list){
-        delete this.transaction[txid]
+      for(txid in data.txlist){
+        delete this.transactions[txid]
       }
+      window.dispatchEvent(new CustomEvent("broadcast", {
+        detail:{ data: data, from: this.id, }
+      }));
     }
   }
 }

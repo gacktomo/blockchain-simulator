@@ -5,10 +5,10 @@ var Network = require('./network');
 var UI = require('./UI');
 
 //global parameter
-window.TRANSACTION_SIZE = 1000; // KB
-window.TRANSACTION_FREQ = 3; // tx/s
-window.BLOCK_SIZE = 4; // MB
-window.BLOCK_TIME = 3; // sec
+window.TRANSACTION_SIZE = 10; // KB
+window.TRANSACTION_FREQ = 5; // tx/s
+window.BLOCK_SIZE = 1; // MB
+window.BLOCK_TIME = 5; // sec
 window.NETWORK_SPEED = 19; // Mbps
 window.NODE_NUM = 16;
 window.LAYOUT_TYPE = "circle";
@@ -37,6 +37,7 @@ window.onload = function () {
     ui.getInfo();
     network.init(NODE_NUM);
     graph.init(network.nodes);
+    ui.init();
     ui.closeModal();
   });
 }
