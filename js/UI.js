@@ -5,6 +5,13 @@ var UI = function() {
   document.getElementById("cancel_btn").addEventListener("click", ()=> { 
     this.closeModal();
   });
+  document.getElementById("running_btn").addEventListener("click", function() { 
+    RUNNING = !RUNNING;
+    if(RUNNING)
+      this.innerHTML = "stop"
+    else
+      this.innerHTML = "start"
+  });
   window.addEventListener("new_broadcast", (event) => { 
     this.setResult(event.detail.data)
     this.addConsole(event.detail.data)
@@ -19,6 +26,7 @@ UI.prototype.init = function(){
   window.ATTACK_LISK = 0;
   window.TX_LATENCY = 0;
   this.setInfo();
+  document.getElementById("footer").innerHTML = ""
 }
 
 UI.prototype.setResult = function(data){

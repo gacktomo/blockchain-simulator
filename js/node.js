@@ -5,7 +5,7 @@ var Node = function(id) {
   this.links = {};
   this.group = null;
   this.transactions = {};
-  this.block_height = 0;
+  this.block_height = -1;
 }
 
 Node.prototype.genTxList = function(data){

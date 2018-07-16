@@ -49,6 +49,7 @@ Network.prototype.init = function(num){
 }
 
 Network.prototype.newTransaction = function(src_id){
+  if(!RUNNING) return;
   var src_node_index = Math.floor(Math.random() * this.node_num);
   src_id = src_id || Object.keys(this.nodes)[src_node_index]
 
@@ -67,6 +68,7 @@ Network.prototype.newTransaction = function(src_id){
 }
 
 Network.prototype.newBlock = function(src_id){
+  if(!RUNNING) return;
   var src_node_index = Math.floor(Math.random() * this.node_num);
   src_id = src_id || Object.keys(this.nodes)[src_node_index]
 

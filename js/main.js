@@ -14,6 +14,7 @@ window.NETWORK_SPEED = 19; // Mbps
 window.NODE_NUM = 16;
 window.LAYOUT_TYPE = "random";
 window.GRAPH_VISIBLE = false;
+window.RUNNING = true;
 
 //result values
 window.CONFIRMED_TX_NUM = 0;
@@ -21,18 +22,19 @@ window.ELAPSED_TIME = 0;
 window.BLOCK_HEIGHT = 0;
 window.THROUGHPUT = 0;
 window.ATTACK_LISK = 0;
-window.TX_LATENCY = 1;
+window.TX_LATENCY = 0;
 
 window.onload = function () {
   var ui = new UI();
   ui.setInfo();
   var network = new Network(NODE_NUM);
   var chain = new Chain();
+  chain.init()
   var graph = new Graph(network.nodes);
 
   // Increment elapsed time
   var elapsed_timer = setInterval(()=>{
-    ELAPSED_TIME += 1;
+    if(RUNNING) ELAPSED_TIME += 1;
   }, 1000)
 
   // Event listener for refresh button.
@@ -40,6 +42,7 @@ window.onload = function () {
     ui.getInfo();
     network.init(NODE_NUM);
     graph.init(network.nodes);
+    chain.init();
     ui.init();
     ui.closeModal();
   });
