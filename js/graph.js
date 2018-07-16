@@ -1,13 +1,13 @@
 var Graph = function(nodes) {
-  this.width = window.innerWidth;
-  this.height = window.innerHeight;
+  this.width = 200;
+  this.height = 200
   this.nodes = {};
   // Set pixi canvas
   this.app = new PIXI.Application(this.width, this.height, {
     transparent: true,
     antialias: true,
   });
-  document.body.appendChild(this.app.view);
+  document.getElementById("graph-area").appendChild(this.app.view);
 
   // Set layer containers
   this.nodes_container= new PIXI.Container();
@@ -19,13 +19,14 @@ var Graph = function(nodes) {
 
   // Set event listners
   window.addEventListener("sendData", (event) => { 
-    this.sendData(event.detail)
+    if(GRAPH_VISIBLE==1)
+      this.sendData(event.detail)
   })
 }
 
 Graph.prototype.init = function(nodes){
-  this.width = window.innerWidth;
-  this.height = window.innerHeight
+  this.width = 200;
+  this.height = 200
   this.app.renderer.resize(this.width, this.height);
   this.nodes = {};
   this.nodes_container.destroy();
@@ -34,6 +35,7 @@ Graph.prototype.init = function(nodes){
   this.links_container=new PIXI.Container();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
+  if(!GRAPH_VISIBLE) return;
 
   // Append Nodes
   for(let id in nodes){

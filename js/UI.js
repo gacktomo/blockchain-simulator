@@ -50,6 +50,7 @@ UI.prototype.getInfo = function(){
   NETWORK_SPEED = document.getElementById("network_speed").value;
   NODE_NUM = document.getElementById("node_num").value;
   LAYOUT_TYPE = document.getElementById("layout_type").value;
+  GRAPH_VISIBLE = document.getElementById("graph_visible").checked;
 }
 
 UI.prototype.setInfo = function(){
@@ -60,6 +61,7 @@ UI.prototype.setInfo = function(){
   document.getElementById("network_speed").value = NETWORK_SPEED;
   document.getElementById("node_num").value = NODE_NUM;
   document.getElementById("layout_type").value = LAYOUT_TYPE;
+  document.getElementById("graph_visible").checked = GRAPH_VISIBLE;
   document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
   document.getElementById("throughput").innerHTML = THROUGHPUT
   document.getElementById("attack_lisk").innerHTML = ATTACK_LISK

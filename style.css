@@ -5,7 +5,7 @@ body {
   color: white;
   margin: 0;
 }
-h1,h2,p {
+h1,h2 {
   color: white;
 }
 select {
@@ -43,7 +43,8 @@ button:active {
 
 .container {
   position: fixed;
-  margin-left: 20px;
+  top: 0px;
+  margin-left: 5%;
 }
 
 .modal {
@@ -54,6 +55,7 @@ button:active {
   width: 100vw;
   height: 100vh;
   position: fixed;
+  top: 0px;
   padding: 10%;
 }
 
@@ -65,11 +67,48 @@ button:active {
   position: fixed;
   bottom: 0px;
   padding: 10px;
-  padding-left: 20px;
+  padding-left: 5%;
   overflow: scroll;
 }
 
 .info-text {
   font-size: 12px;
   color: rgb(125, 125, 125) !important;
+}
+#graph-area {
+  margin-top: 40px;
+  width: 200px;
+  height: 200px;
+  margin-left: auto;
+  margin-right: 2%;
+}
+
+.chain-area {
+  width: 100%;
+  height: auto;
+}
+.chain-box {
+  width: 90%;
+  margin-left:5%;
+  margin-bottom:30px;
+  height: 150px;
+  background-color: rgb(26, 25, 36);
+  overflow: scroll;
+  white-space: nowrap;
+}
+.chain-title {
+  position: fixed;
+  margin-left:5%;
+  font-size: 12px;
+  color: rgb(125, 125, 125) !important;
+}
+.block {
+  flex: 0 0 50px;
+  width: 10px;
+  height: 10px;
+  margin: 15px;
+  padding: 5px;
+  font-size: 12px;
+  color: rgb(125, 125, 125) !important;
+  border: solid 1px rgba(125, 125, 125, 0.5);
 }
