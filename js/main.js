@@ -13,7 +13,7 @@ window.BLOCK_TIME = 1; // sec
 window.NETWORK_SPEED = 19; // Mbps
 window.NODE_NUM = 16;
 window.LAYOUT_TYPE = "random";
-window.GRAPH_VISIBLE = false;
+window.GRAPH_VISIBLE = true;
 window.RUNNING = true;
 
 //result values
@@ -41,9 +41,9 @@ window.onload = function () {
   document.getElementById("refresh_btn").addEventListener("click", ()=> { 
     ui.getInfo();
     network.init(NODE_NUM);
-    graph.init(network.nodes);
     chain.init();
     ui.init();
     ui.closeModal();
+    graph.init(network.nodes);
   });
 }

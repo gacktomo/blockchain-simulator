@@ -2,19 +2,6 @@ var Graph = function(nodes) {
   this.width = 200;
   this.height = 200
   this.nodes = {};
-  // Set pixi canvas
-  this.app = new PIXI.Application(this.width, this.height, {
-    transparent: true,
-    antialias: true,
-  });
-  document.getElementById("graph-area").appendChild(this.app.view);
-
-  // Set layer containers
-  this.nodes_container= new PIXI.Container();
-  this.links_container= new PIXI.Container();
-  this.generateTicker = new PIXI.ticker.Ticker();
-  this.app.stage.addChild(this.links_container);
-  this.app.stage.addChild(this.nodes_container);
   this.init(nodes);
 
   // Set event listners
@@ -25,17 +12,21 @@ var Graph = function(nodes) {
 }
 
 Graph.prototype.init = function(nodes){
+  if(this.app && this.app.stage) this.app.destroy(true)
+  if(!GRAPH_VISIBLE) return;
   this.width = 200;
   this.height = 200
+  this.app = new PIXI.Application(this.width, this.height, {
+    transparent: true,
+    antialias: true,
+  });
+  document.getElementById("graph-area").appendChild(this.app.view);
   this.app.renderer.resize(this.width, this.height);
   this.nodes = {};
-  this.nodes_container.destroy();
-  this.links_container.destroy();
   this.nodes_container=new PIXI.Container();
   this.links_container=new PIXI.Container();
   this.app.stage.addChild(this.links_container);
   this.app.stage.addChild(this.nodes_container);
-  if(!GRAPH_VISIBLE) return;
 
   // Append Nodes
   for(let id in nodes){
@@ -59,13 +50,6 @@ Graph.prototype.init = function(nodes){
         this.connectLink(id, dist_id);
     }
   }
-
-  // like cron
-  this.generateTicker.destroy();
-  this.generateTicker = new PIXI.ticker.Ticker();
-  this.generateTicker.stop();
-  this.generateTicker.add((delta) => {});
-  this.generateTicker.start();
 }
 
 Graph.prototype.setNodePos = function(target){

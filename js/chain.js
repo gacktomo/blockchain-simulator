@@ -2,14 +2,7 @@ var Chain = function() {
   let parent = document.getElementById("group1")
   this.width = window.innerWidth;
   this.height = parent.clientHeight;
-  this.app = new PIXI.Application(this.width, this.height, {
-    transparent: true,
-    antialias: true,
-  });
-  this.app.backgroundColor = 0xFFFFFF
-  this.main_container=new PIXI.Container();
-  this.app.stage.addChild(this.main_container);
-  parent.appendChild(this.app.view);
+  this.snap = Snap("#group1-svg");
 
   window.addEventListener("new_broadcast", (event) => { 
     if(event.detail.data.type == "inv")
@@ -19,52 +12,49 @@ var Chain = function() {
 
 Chain.prototype.init = function(){
   document.getElementById("group1").scrollLeft = 0;
-  this.main_container.destroy();
-  this.main_container=new PIXI.Container();
-  this.app.stage.addChild(this.main_container);
+  this.snap.clear();
 }
 
 Chain.prototype.addBlock = function(data){
-  this.width += 50;
-  this.app.renderer.resize(this.width, this.height);
   let box = document.getElementById("group1");
-  let block = new PIXI.Graphics();
-  let block_w = 10;
-  block.lineStyle(0.5,0xffffff);
-  block.drawRect(0, 0, block_w, block_w);
-  block.endFill();
-  block.x = 50 * data.block_number + 50;
-  block.y = this.height/2
-  let number = new PIXI.Text("#"+data.block_number,{
-    fontFamily : 'Arial', 
-    fontSize: 12, 
-    fill : 0xaaaaaa, 
-    align : 'center'
+  this.width += 50;
+  this.snap.attr({ width: this.width, });
+  let block_w = 20;
+  let _x = 50 * data.block_number + 50;
+  let _y = this.height/2
+  let block = this.snap.rect(_x+100, _y, block_w, block_w);
+  block.attr({
+    fill: "#1a1924",
+    stroke: "#ffffff",
+    strokeWidth: 0.5,
+    opacity: 0.0,
   });
-  number.x = block.x
-  number.y = this.height - 20
+  let number = this.snap.text(_x, this.height-20, "#"+data.block_number);
+  number.attr({
+    stroke: "#888888",
+    opacity: 0.0,
+    'font-size': "12px",
+  });
   if(data.block_number>0){
-    var line = new PIXI.Graphics();
-    line.lineStyle(0.5,0xffffff)
-        .moveTo(block.x, block.y+block_w/2)
-        .lineTo(block.x-50+block_w, block.y+block_w/2);
-    line.endFill();
-    this.main_container.addChild(line);
+    var line = this.snap.line(_x, _y+block_w/2, _x-50+block_w, _y+block_w/2);
+    line.attr({
+      stroke: "#888888",
+      opacity: 0.0,
+    });
+    line.animate({x: _x, opacity: 1.0}, 1000, mina.easeinout);
   }
-  this.main_container.addChild(block);
-  this.main_container.addChild(number);
 
   if(this.width / window.innerWidth > 1.5){
     TweenMax.to(box, 0.5, { 
-      scrollLeft: block.x-window.innerWidth/2, 
+      scrollLeft: _x-window.innerWidth/2, 
     });
   }
-  TweenMax.from([block,number], 0.5, { 
-    x: number.x + 100, 
-    alpha: 0.0,
-  });
-  TweenMax.from(line, 0.5, { 
-    alpha: 0.0,
+  block.animate({x: _x, opacity: 1.0}, 1000, mina.easeinout);
+  number.animate({x: _x, opacity: 1.0}, 1000, mina.easeinout);
+  TweenMax.from(block, 0.5, { 
+    attr:{
+      x: 100
+    }
   });
 }
 
