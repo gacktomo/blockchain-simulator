@@ -26,7 +26,23 @@ UI.prototype.init = function(){
   window.ATTACK_LISK = 0;
   window.TX_LATENCY = 0;
   this.setInfo();
+  this.initChainArea();
   document.getElementById("footer").innerHTML = ""
+}
+
+UI.prototype.initChainArea = function(){
+  let chain_area = document.getElementById("chain_area")
+  chain_area.innerHTML = "";
+  for(let i=0; i<GROUP_NUM; i++){
+    chain_area.insertAdjacentHTML('beforeend',
+      `
+      <div id='group${i}' class='chain-box'>
+        <p class='chain-title'>group ${i+1}</p>
+        <svg id='group${i}-svg'/>
+      </div>
+      `
+    );
+  }
 }
 
 UI.prototype.setResult = function(data){
@@ -57,6 +73,7 @@ UI.prototype.getInfo = function(){
   BLOCK_TIME = document.getElementById("block_time").value;
   NETWORK_SPEED = document.getElementById("network_speed").value;
   NODE_NUM = document.getElementById("node_num").value;
+  GROUP_NUM = document.getElementById("group_num").value;
   LAYOUT_TYPE = document.getElementById("layout_type").value;
   GRAPH_VISIBLE = document.getElementById("graph_visible").checked;
 }
@@ -68,6 +85,7 @@ UI.prototype.setInfo = function(){
   document.getElementById("block_time").value = BLOCK_TIME;
   document.getElementById("network_speed").value = NETWORK_SPEED;
   document.getElementById("node_num").value = NODE_NUM;
+  document.getElementById("group_num").value = GROUP_NUM;
   document.getElementById("layout_type").value = LAYOUT_TYPE;
   document.getElementById("graph_visible").checked = GRAPH_VISIBLE;
   document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
@@ -83,7 +101,7 @@ UI.prototype.addConsole = function(data){
     );
   }else if(data.type == "inv"){
     document.getElementById("footer").insertAdjacentHTML('afterbegin',
-      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> ${data.id}</div>`
+      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> Group${data.group} - #${data.block_number}</div>`
     );
   }
 }

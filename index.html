@@ -13,6 +13,7 @@
     Block Size (MB) : <input type="number" id="block_size" /></br>
     Block Time (Sec) : <input type="number" id="block_time" /></br>
     Node Num : <input type="number" id="node_num" /></br>
+    Group Num : <input type="number" id="group_num" /></br>
     Avg Network Speed (Mbps) : <input type="number" id="network_speed" /></br>
     Graph Visible : <input type="checkbox" id="graph_visible" value="0"></br>
     Layout : 
@@ -30,7 +31,7 @@
     <button id="settings_btn">Settings</button>
     <button id="running_btn" class="secondary-btn">Stop</button><br><br>
     <div class="info-text">
-      <span>Block Height <span id="block_height"></span></span><br>
+      <span style="display:none;">Block Height <span id="block_height"></span></span><br>
       <span>Throughput <span id="throughput"></span> Tx/s</span><br>
       <span>Tx Latency <span id="tx_latency"></span> Sec</span><br>
       <span>Attack Lisk <span id="attack_lisk"></span> %</span><br>
@@ -39,15 +40,8 @@
 
   <div id="graph-area"></div>
 
-  <div class="chain-area">
-    <div id="group1" class="chain-box">
-      <p class="chain-title">group 1</p>
-      <svg id="group1-svg"/>
-    </div>
-    <div id="group2" class="chain-box">
-      <p class="chain-title">group 2</p>
-    </div>
-  </div>
+  <div id="chain_area"></div>
+  <div style="height:300px;"></div>
 
   <div id="footer" class="footer info-text">
   </div>

@@ -11,10 +11,11 @@ var Network = function(num) {
 }
 
 Network.prototype.init = function(num){
+  for(let key in this.nodes) delete this.nodes[key]
   this.nodes = {}
   this.tx_num = 0
   for(let i=0; i<num; i++){
-    var id = uuid();
+    var id = i;
     this.nodes[id] = new Node(id);
   }
   //random link to 8 nodes
@@ -30,6 +31,8 @@ Network.prototype.init = function(num){
     })
   }
   this.node_num = Object.keys(this.nodes).length;
+
+  // Generate Tx periodically
   let t = 1;
   let times = Math.floor(TRANSACTION_FREQ/1000)
   if(TRANSACTION_FREQ < 1000)
@@ -40,10 +43,14 @@ Network.prototype.init = function(num){
       this.newTransaction();
     }
   }, t)
+
+  // Generate Block periodically
   if(this.blockGenTimer) clearInterval(this.blockGenTimer)
   this.blockGenTimer = setInterval(()=>{
-    this.newBlock()
+    for(let i=0; i<GROUP_NUM; i++)
+      this.newBlock({group:i})
   }, 1000 * BLOCK_TIME)
+
   // var shaObj = new jsSHA("SHA-1", "TEXT");
   // console.log(shaObj.getHash("HEX"))
 }
@@ -54,10 +61,12 @@ Network.prototype.newTransaction = function(src_id){
   src_id = src_id || Object.keys(this.nodes)[src_node_index]
 
   this.tx_num++
+  var dist_addr = Math.floor(Math.random() * 1000000);
   var data = { 
     type: "tx",
     id: this.tx_num, 
-    to: uuid(), 
+    to: dist_addr, 
+    group: dist_addr % GROUP_NUM,
     size: TRANSACTION_SIZE/1000, 
     gentime: ELAPSED_TIME,
   }
@@ -67,15 +76,25 @@ Network.prototype.newTransaction = function(src_id){
   }));
 }
 
-Network.prototype.newBlock = function(src_id){
+// params = {group:0, src_id:"abcdef"}
+Network.prototype.newBlock = function(params={}){
   if(!RUNNING) return;
-  var src_node_index = Math.floor(Math.random() * this.node_num);
-  src_id = src_id || Object.keys(this.nodes)[src_node_index]
-
+  var group = (params.group !== undefined) ? params.group : Math.floor(Math.random() * GROUP_NUM);
+  var src_id;
+  if(params.src_id) src_id = params.src_id
+  else{
+    shuffle(Object.keys(this.nodes)).forEach((id) => {
+      if(this.nodes[id].group == group){
+        src_id = id;
+        return;
+      }
+    })
+  }
   var data = { 
     type: "inv",
     id: uuid(), 
     to: uuid(), 
+    group: this.nodes[src_id].group,
     size: TRANSACTION_SIZE/1000, 
     block_number: this.nodes[src_id].block_height + 1,
   }
@@ -90,6 +109,7 @@ Network.prototype.broadcast = function(src_id, data){
   for(let dist_id in this.nodes[src_id].links){
     var networkSpeed = this.nodes[src_id].networkSpeed < this.nodes[dist_id].networkSpeed ? this.nodes[src_id].networkSpeed : this.nodes[dist_id].networkSpeed
     var sendTime = (data.size * 8) / networkSpeed
+    data.reset_num = RESET_NUM;
     setTimeout(()=>{
       if(this.nodes[dist_id])
       this.nodes[dist_id].receiveData(data);

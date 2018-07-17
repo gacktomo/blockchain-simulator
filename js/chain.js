@@ -1,9 +1,5 @@
 var Chain = function() {
-  let parent = document.getElementById("group1")
-  this.width = window.innerWidth;
-  this.height = parent.clientHeight;
-  this.snap = Snap("#group1-svg");
-
+  this.snap = [];
   window.addEventListener("new_broadcast", (event) => { 
     if(event.detail.data.type == "inv")
       this.addBlock(event.detail.data)
@@ -11,19 +7,29 @@ var Chain = function() {
 }
 
 Chain.prototype.init = function(){
-  document.getElementById("group1").scrollLeft = 0;
-  this.snap.clear();
+  let parent = document.getElementById("group0")
+  this.width = window.innerWidth;
+  this.height = parent.clientHeight;
+  for(let i in this.snap){
+    this.snap[i].clear();
+  }
+  this.snap = [];
+  for(let i=0; i<GROUP_NUM; i++){
+    this.snap[i] = Snap(`#group${i}-svg`);
+    document.getElementById(`group${i}`).scrollLeft = 0;
+  }
 }
 
 Chain.prototype.addBlock = function(data){
-  let box = document.getElementById("group1");
+  let group = data.group
+  let box = document.getElementById("group"+data.group);
   this.width += 50;
-  this.snap.attr({ width: this.width, });
+  this.snap[group].attr({ width: this.width, });
   let block_w = 20;
   let _x = 50 * data.block_number + 50;
   let _y = this.height/2
 
-  let block = this.snap.rect(_x+100, _y, block_w, block_w);
+  let block = this.snap[group].rect(_x+100, _y, block_w, block_w);
   block.attr({
     fill: "#1a1924",
     stroke: "#ffffff",
@@ -32,7 +38,7 @@ Chain.prototype.addBlock = function(data){
   });
   block.animate({x: _x, opacity: 1.0}, 1000, mina.easeinout);
 
-  let number = this.snap.text(_x, _y-20, "#"+data.block_number);
+  let number = this.snap[group].text(_x, _y-20, "#"+data.block_number);
   number.attr({
     stroke: "#888888",
     opacity: 0.0,
@@ -41,7 +47,7 @@ Chain.prototype.addBlock = function(data){
   number.animate({x: _x, opacity: 1.0}, 1500, mina.easeinout);
 
   if(data.block_number>0){
-    var line = this.snap.line(_x, _y+block_w/2, _x-50+block_w, _y+block_w/2);
+    var line = this.snap[group].line(_x, _y+block_w/2, _x-50+block_w, _y+block_w/2);
     line.attr({
       stroke: "#888888",
       opacity: 0.0,

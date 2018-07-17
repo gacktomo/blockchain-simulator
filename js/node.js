@@ -3,7 +3,8 @@ var Node = function(id) {
   this.networkSpeed = this.normRand(NETWORK_SPEED, 10)
   this.graphObj = null;
   this.links = {};
-  this.group = null;
+  this.group = this.id % GROUP_NUM;
+  this.broadcasted = {};
   this.transactions = {};
   this.block_height = -1;
 }
@@ -17,7 +18,6 @@ Node.prototype.genTxList = function(data){
     if(tx_num <= block_capacity){
       tx_list[txid] = this.transactions[txid]
       delete this.transactions[txid];
-      // ToDo - Tx exec order
     }else{
       break;
     }
@@ -26,27 +26,37 @@ Node.prototype.genTxList = function(data){
 }
 
 Node.prototype.receiveData = function(data){
+  if(data.reset_num < RESET_NUM) return;
   if(data.type == "tx"){
-    if(!this.transactions[data.id]){
-      this.transactions[data.id] = data;
-      window.dispatchEvent(new CustomEvent("broadcast", {
-        detail:{ data: data, from: this.id, }
-      }));
+    if(data.group == this.group){
+      this.transactions[data.id] = data
     }
-  }else if(data.type == "inv"){
-    if(data.block_number > this.block_height){
+  }
+  else if(data.type == "inv"){
+    if(data.group == this.group && data.block_number > this.block_height){
       this.block_height = data.block_number
       for(txid in data.txlist){
         delete this.transactions[txid]
       }
-      window.dispatchEvent(new CustomEvent("broadcast", {
-        detail:{ data: data, from: this.id, }
-      }));
+      this.cleanBroadcastList();
     }
+  }
+  if(!this.broadcasted[data.id]){
+    this.broadcasted[data.id] = {broadcast_time: ELAPSED_TIME};
+    window.dispatchEvent(new CustomEvent("broadcast", {
+      detail:{ data: data, from: this.id, }
+    }));
   }
 }
 
-Node.prototype.normRand = function (m, s) {
+Node.prototype.cleanBroadcastList = function() {
+  for(txid in this.transactions){
+    if(ELAPSED_TIME - this.transactions[txid].broadcast_time > 60)
+      delete this.transactions[txid]
+  }
+}
+
+Node.prototype.normRand = function(m, s) {
   var a = 1 - Math.random();
   var b = 1 - Math.random();
   var c = Math.sqrt(-2 * Math.log(a));
