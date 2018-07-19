@@ -101,7 +101,7 @@ UI.prototype.addConsole = function(data){
     );
   }else if(data.type == "inv"){
     document.getElementById("footer").insertAdjacentHTML('afterbegin',
-      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> Group${data.group} - #${data.block_number}</div>`
+      `<div>Broadcasted new <span style="color:#c62c2c;">Block</span> Group${data.group+1} - #${data.block_number}</div>`
     );
   }
 }

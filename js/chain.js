@@ -55,8 +55,9 @@ Chain.prototype.addBlock = function(data){
     line.animate({x: _x, opacity: 1.0}, 1500, mina.easeinout);
   }
 
-  if(this.width / window.innerWidth > 1.5){
+  if(this.width / window.innerWidth > 0.5){
     TweenMax.to(box, 1, { 
+      ease: Sine.easeInOut,
       scrollLeft: _x-window.innerWidth/2, 
     });
   }
