@@ -6,13 +6,13 @@ var Network = require('./network');
 var UI = require('./UI');
 
 //global parameter
-window.TRANSACTION_SIZE = 500; // KB
+window.TRANSACTION_SIZE = 100; // KB
 window.TRANSACTION_FREQ = 5; // tx/s
 window.BLOCK_SIZE = 1; // MB
-window.BLOCK_TIME = 1; // sec
+window.BLOCK_TIME = 10; // sec
 window.NETWORK_SPEED = 19; // Mbps
 window.NODE_NUM = 16;
-window.GROUP_NUM =3;
+window.GROUP_NUM =2;
 window.LAYOUT_TYPE = "random";
 window.GRAPH_VISIBLE = true;
 window.RUNNING = true;
@@ -25,6 +25,7 @@ window.BLOCK_HEIGHT = 0;
 window.THROUGHPUT = 0;
 window.ATTACK_LISK = 0;
 window.TX_LATENCY = 0;
+window.BLOCK_RECIEVE_LIST = {};
 
 window.onload = function () {
   var ui = new UI();

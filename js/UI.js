@@ -16,6 +16,30 @@ var UI = function() {
     this.setResult(event.detail.data)
     this.addConsole(event.detail.data)
   })
+  window.addEventListener("broadcast", (event) => { 
+    let data = event.detail.data
+    if(data.type == "inv"){
+      if(BLOCK_RECIEVE_LIST[data.block_number]){
+        BLOCK_RECIEVE_LIST[data.block_number] += 1;
+      }else{
+        BLOCK_RECIEVE_LIST[data.block_number] = 1;
+      }
+      
+      if(BLOCK_RECIEVE_LIST[data.block_number] >= NODE_NUM * GROUP_NUM){
+        console.log(`all broadcasted ${data.block_number}`)
+        delete BLOCK_RECIEVE_LIST[data.block_number];
+
+        let diff = 0;
+        for(txid in data.txlist){
+          diff += (ELAPSED_TIME - data.txlist[txid].gentime)
+        }
+        data.txlist = data.txlist || {};
+        CONFIRMED_TX_NUM = Object.keys(data.txlist).length;
+        WORST_TX_LATENCY = Math.floor(diff/CONFIRMED_TX_NUM*100)/100
+        document.getElementById("worst_tx_latency").innerHTML = WORST_TX_LATENCY
+      }
+    }
+  })
 }
 
 UI.prototype.init = function(){
@@ -25,6 +49,7 @@ UI.prototype.init = function(){
   window.THROUGHPUT = 0;
   window.ATTACK_LISK = 0;
   window.TX_LATENCY = 0;
+  window.WORST_TX_LATENCY = 0;
   this.setInfo();
   this.initChainArea();
   document.getElementById("footer").innerHTML = ""
@@ -51,6 +76,7 @@ UI.prototype.setResult = function(data){
       BLOCK_HEIGHT = data.block_number
       document.getElementById("block_height").innerHTML = "#"+BLOCK_HEIGHT;
     }
+    
     let diff = 0;
     let sum = TX_LATENCY * CONFIRMED_TX_NUM
     for(txid in data.txlist){
@@ -92,6 +118,7 @@ UI.prototype.setInfo = function(){
   document.getElementById("throughput").innerHTML = THROUGHPUT
   document.getElementById("attack_lisk").innerHTML = ATTACK_LISK
   document.getElementById("tx_latency").innerHTML = TX_LATENCY
+  document.getElementById("worst_tx_latency").innerHTML = WORST_TX_LATENCY
 }
 
 UI.prototype.addConsole = function(data){
