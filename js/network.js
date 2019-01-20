@@ -69,6 +69,7 @@ Network.prototype.newTransaction = function(src_id){
     group: dist_addr % GROUP_NUM,
     size: TRANSACTION_SIZE/1000, 
     gentime: ELAPSED_TIME,
+    gentime_real: Date.now(),
   }
   this.broadcast(src_id, data)
   window.dispatchEvent(new CustomEvent("new_broadcast", {

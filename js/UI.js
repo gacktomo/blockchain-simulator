@@ -18,6 +18,22 @@ var UI = function() {
   })
   window.addEventListener("broadcast", (event) => { 
     let data = event.detail.data
+    if(data.type == "tx"){
+      if(TX_RECIEVE_LIST[data.id]){
+        TX_RECIEVE_LIST[data.id] += 1;
+      }else{
+        TX_RECIEVE_LIST[data.id] = 1;
+      }
+      if(TX_RECIEVE_LIST[data.id] >= NODE_NUM){
+        console.log(`all received TX ${data.id}`)
+        console.log(Date.now()-data.gentime_real)
+        delete TX_RECIEVE_LIST[data.id];
+
+        row_latency = (TX_PROP_LATENCY * (data.id-1) + (Date.now() - data.gentime_real))/data.id
+        TX_PROP_LATENCY = Math.floor(row_latency*100)/100
+        document.getElementById("tx_prop_latency").innerHTML = TX_PROP_LATENCY
+      }
+    }
     if(data.type == "inv"){
       if(BLOCK_RECIEVE_LIST[data.block_number]){
         BLOCK_RECIEVE_LIST[data.block_number] += 1;
@@ -49,6 +65,7 @@ UI.prototype.init = function(){
   window.THROUGHPUT = 0;
   window.ATTACK_LISK = 0;
   window.TX_LATENCY = 0;
+  window.TX_PROP_LATENCY = 0;
   window.WORST_TX_LATENCY = 0;
   this.setInfo();
   this.initChainArea();
@@ -119,6 +136,7 @@ UI.prototype.setInfo = function(){
   document.getElementById("attack_lisk").innerHTML = ATTACK_LISK
   document.getElementById("tx_latency").innerHTML = TX_LATENCY
   document.getElementById("worst_tx_latency").innerHTML = WORST_TX_LATENCY
+  document.getElementById("tx_prop_latency").innerHTML = TX_PROP_LATENCY
 }
 
 UI.prototype.addConsole = function(data){
